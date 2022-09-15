@@ -8,9 +8,9 @@ certbot_renew() {
 
 try_load_ssl_config() {
     if [ -f /etc/letsencrypt/live/$LE_MAIN_DOMAIN/fullchain.pem ]; then
-        echo "ssl_certificate     /etc/letsencrypt/live/$LE_MAIN_DOMAIN/fullchain.pem;" > /etc/nginx/conf.d/_cert.conf
-        echo "ssl_certificate_key /etc/letsencrypt/live/$LE_MAIN_DOMAIN/privkey.pem;"  >> /etc/nginx/conf.d/_cert.conf
-        cp /etc/nginx/conf.d.ssl/* /etc/nginx/conf.d
+        echo "ssl_certificate     /etc/letsencrypt/live/$LE_MAIN_DOMAIN/fullchain.pem;" > /etc/nginx/http.d/_cert.conf
+        echo "ssl_certificate_key /etc/letsencrypt/live/$LE_MAIN_DOMAIN/privkey.pem;"  >> /etc/nginx/http.d/_cert.conf
+        cp /etc/nginx/http.d.ssl/* /etc/nginx/http.d
         pidof nginx && nginx -s reload
         echo "SSL config loaded"
     else
