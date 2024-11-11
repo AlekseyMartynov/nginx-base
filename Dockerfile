@@ -1,8 +1,6 @@
-FROM alpine:3.16
+FROM alpine:3.20
 
 RUN apk add --no-cache nginx certbot
-
-RUN sed -i 's/TLSv1\.1//g' /etc/nginx/nginx.conf
 
 ADD http.d/*      /etc/nginx/http.d/
 ADD dhparam.pem   /

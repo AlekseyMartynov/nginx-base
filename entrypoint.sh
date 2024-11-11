@@ -1,5 +1,5 @@
 certbot_renew() {
-    if certbot certonly -n --agree-tos --no-self-upgrade --keep --expand --webroot -w /mnt/acme-webroot -m $LE_EMAIL $LE_DOMAIN_ARGS; then
+    if certbot certonly -n --agree-tos --keep --expand --webroot -w /mnt/acme-webroot -m $LE_EMAIL $LE_DOMAIN_ARGS; then
         nginx -s reload
     else
         echo "Renewal failed!"
