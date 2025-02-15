@@ -22,6 +22,11 @@ certbot_renew() {
 }
 
 ensure_ssl_config() {
+    # https://serverfault.com/a/1104847
+    chown -R :le_readers /etc/letsencrypt/archive /etc/letsencrypt/live
+    chmod -R g+r         /etc/letsencrypt/archive /etc/letsencrypt/live
+    chmod    g+x         /etc/letsencrypt/archive /etc/letsencrypt/live
+
     if [ -f /etc/letsencrypt/live/$LE_MAIN_DOMAIN/fullchain.pem ]; then
         if [ -f /etc/nginx/http.d/_cert.conf ]; then
             echo "SSL config already active"
@@ -51,6 +56,9 @@ else
 fi
 
 rm -f /run/nginx/nginx.pid
+
+getent group le_readers || addgroup -g $LE_READERS_GID le_readers
+adduser nginx le_readers
 
 ensure_ssl_config
 
