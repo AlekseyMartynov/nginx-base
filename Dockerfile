@@ -1,10 +1,9 @@
-FROM alpine:3.16
+FROM alpine:3.20
 
 RUN apk add --no-cache nginx certbot
 
-RUN sed -i 's/TLSv1\.1//g' /etc/nginx/nginx.conf
-
 ADD http.d/*      /etc/nginx/http.d/
+ADD ssl/*         /etc/nginx/ssl/
 ADD entrypoint.sh /
 
 VOLUME /etc/letsencrypt
@@ -14,5 +13,4 @@ ENV LE_EMAIL=letsencrypt@example.com
 ENV LE_DOMAINS="example.com example.org"
 ENV NGINX_LOGS=true
 
-STOPSIGNAL SIGKILL
-ENTRYPOINT [ "sh", "-e", "/entrypoint.sh" ]
+ENTRYPOINT [ "sh", "/entrypoint.sh" ]
