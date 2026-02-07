@@ -1,5 +1,8 @@
 trap shutdown TERM
 
+fallback_crt=/etc/letsencrypt/fallback_crt.pem
+fallback_key=/etc/letsencrypt/fallback_key.pem
+
 shutdown() {
     if [ -f /run/nginx/nginx.pid ]; then
         NGINX_PID=$(cat /run/nginx/nginx.pid)
@@ -11,7 +14,7 @@ shutdown() {
 
 certbot_renew() {
     for i in $LE_DOMAINS; do
-        if [ $i != localhost ] && [ ! -f /etc/letsencrypt/renewal/$i.conf ]; then
+        if [ ! -f /etc/letsencrypt/renewal/$i.conf ]; then
             certbot certonly -n --agree-tos --keep --webroot -w /mnt/acme-webroot -m $LE_EMAIL -d $i
         fi
     done
@@ -34,9 +37,9 @@ update_ssl_config() {
         if [ -f $crt_path ] && [ -f $key_path ]; then
             echo "SSL OK $i"
         else
-            echo "SSL MISSING $i"
-            crt_path=ssl/localhost_crt.pem
-            key_path=ssl/localhost_key.pem
+            echo "SSL FALLBACK $i"
+            crt_path=$fallback_crt
+            key_path=$fallback_key
         fi
 
         echo "ssl_certificate     $crt_path;"  > /etc/nginx/ssl/$i.conf
@@ -62,6 +65,12 @@ if [ -d /etc/nginx/http.d.ssl ]; then
     echo "Incompatible old config detected"
     exit 1
 fi
+
+if [ ! -f $fallback_crt ]; then
+    openssl req -x509 -newkey rsa:4096 -sha256 -days 23456 -subj / -nodes -out $fallback_crt -keyout $fallback_key
+fi
+
+mkdir -p /etc/nginx/ssl
 
 rm -f /run/nginx/nginx.pid
 

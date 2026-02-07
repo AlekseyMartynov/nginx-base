@@ -1,9 +1,8 @@
 FROM alpine:3.23
 
-RUN apk add --no-cache nginx certbot
+RUN apk add --no-cache nginx certbot openssl
 
 ADD http.d/*      /etc/nginx/http.d/
-ADD ssl/*         /etc/nginx/ssl/
 ADD entrypoint.sh /
 
 VOLUME /etc/letsencrypt
