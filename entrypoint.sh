@@ -54,6 +54,10 @@ update_ssl_config() {
 write_domain_ssl_conf() {
     echo "ssl_certificate     $2;"  > /etc/nginx/ssl/$1.conf
     echo "ssl_certificate_key $3;" >> /etc/nginx/ssl/$1.conf
+
+    if [ $1 != fallback ]; then
+        echo "server_name     $1;" >> /etc/nginx/ssl/$1.conf
+    fi
 }
 
 if [ "$NGINX_LOGS" == true ]; then
