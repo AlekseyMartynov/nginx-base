@@ -42,14 +42,18 @@ update_ssl_config() {
             key_path=$fallback_key
         fi
 
-        echo "ssl_certificate     $crt_path;"  > /etc/nginx/ssl/$i.conf
-        echo "ssl_certificate_key $key_path;" >> /etc/nginx/ssl/$i.conf
+        write_domain_ssl_conf $i $crt_path $key_path
 
         if [ $first == true ]; then
             cp /etc/nginx/ssl/$i.conf /etc/nginx/ssl/default.conf
             first=false
         fi
     done
+}
+
+write_domain_ssl_conf() {
+    echo "ssl_certificate     $2;"  > /etc/nginx/ssl/$1.conf
+    echo "ssl_certificate_key $3;" >> /etc/nginx/ssl/$1.conf
 }
 
 if [ "$NGINX_LOGS" == true ]; then
