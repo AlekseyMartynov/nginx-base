@@ -45,7 +45,7 @@ update_ssl_config() {
         write_domain_ssl_conf $i $crt_path $key_path
 
         if [ $first == true ]; then
-            cp /etc/nginx/ssl/$i.conf /etc/nginx/ssl/default.conf
+            cp /etc/nginx/ssl/$i.conf /etc/nginx/ssl/first.conf
             first=false
         fi
     done
