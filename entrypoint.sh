@@ -75,6 +75,7 @@ if [ ! -f $fallback_crt ]; then
 fi
 
 mkdir -p /etc/nginx/ssl
+write_domain_ssl_conf fallback $fallback_crt $fallback_key
 
 rm -f /run/nginx/nginx.pid
 
